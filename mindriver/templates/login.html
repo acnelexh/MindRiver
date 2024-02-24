@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<title>Mindriver</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+{% endblock %}
+
+{% block body %}
+<ul>
+    <li>
+        <a href="{{url_for('route_login_get')}}">login</a>
+    </li>
+    <li>
+        <form action="{{url_for('route_accounts_post')}}?target={{url_for('route_index_get')}}" method="post" enctype="multipart/form-data">
+            <input type="text" name="username" required/>
+            <input type="password" name="password" required/>
+            <input type="submit" value="login"/>
+            <input type="hidden" name="operation" value="login"/>
+        </form>
+    </li>
+</ul>
+
+{% endblock %}

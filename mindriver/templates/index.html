@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<title>Mindriver</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+{% endblock %}
+
+{% block body %}
+<!-- Plain old HTML and jinja2 nav bar goes here -->
+<ul>
+    <li>
+        <a href="{{url_for('route_index_get')}}">Mindriver</a>
+        <a href="{{url_for('route_login_get')}}">login</a>
+    </li>
+</ul>
+
+<div id="reactEntry">
+    Loading ...
+</div>
+<!-- Load JavaScript -->
+<script type="text/javascript" src="{{ url_for('static', filename='js/bundle.js') }}"></script>
+{% endblock %}
