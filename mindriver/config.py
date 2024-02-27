@@ -17,4 +17,4 @@ ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif'])
 MAX_CONTENT_LENGTH = 16 * 1024 * 1024
 
 # Database file is var/mindriver.sqlite3
-DATABASE_FILENAME = ROOT/'var'/'mindriver.sqlite3'
+DATABASE_FILENAME = ROOT/'var'/'mindriver.db'

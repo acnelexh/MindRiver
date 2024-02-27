@@ -1,0 +1,58 @@
+#!/bin/bash
+# mindriverdb
+
+# Stop on errors
+# See https://vaneyckt.io/posts/safer_bash_scripts_with_set_euxo_pipefail/
+set -Eeuo pipefail
+
+
+DB_NAME="var/mindriver.db"
+DB_UPLOADS="var/uploads"
+
+# Sanity check command line options
+usage() {
+  	echo "Usage: $0 (create|destroy|reset)"
+}
+
+create() {
+	if [ -f "$DB_NAME" ]; then
+    	echo "Database $DB_NAME already exists."
+	else
+		# Create a new SQLite database
+		sqlite3 $DB_NAME "VACUUM;"
+		echo "Database $DB_NAME created successfully."
+	fi
+}
+
+destroy() {
+	rm -rf $DB_NAME $DB_UPLOADS
+}
+
+reset() {
+	destroy
+	create
+}
+
+
+if [ $# -ne 1 ]; then
+  	usage
+  	exit 1
+fi
+
+# Parse argument.  $1 is the first argument
+case $1 in
+  	"create")
+	  	create
+	  	;;
+	"destroy")
+		destroy
+		;;
+	"reset")
+		destroy
+		create
+		;;
+  	*)
+    	usage
+    	exit 1
+    	;;
+esac

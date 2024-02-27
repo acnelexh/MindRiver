@@ -1,6 +1,7 @@
 import flask
-from mindriver.api.authen import user_login
 import mindriver
+from mindriver.api.authen import user_login, user_create
+
 
 @mindriver.app.route('/accounts/', methods=['POST'])
 def route_accounts_post():
@@ -13,11 +14,11 @@ def route_accounts_post():
             # already login, go to '/'
             return flask.redirect(flask.url_for('route_index_get'))
         user_login(cur)
-    # elif operation == 'create':
-    #     if 'username' in flask.session:
-    #         # already login, go to edit account
-    #         return flask.redirect(flask.url_for('route_edit_get'))
-    #     user_create(cur)
+    elif operation == 'create':
+        if 'username' in flask.session:
+            # already login, go to edit account
+            return flask.redirect(flask.url_for('route_edit_get'))
+        user_create(cur)
     # elif operation == 'delete':
     #     if 'username' not in flask.session:
     #         # user not login

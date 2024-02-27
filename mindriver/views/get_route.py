@@ -15,3 +15,12 @@ def route_login_get():
     # PASS
     context = {}
     return flask.render_template("login.html", **context)
+
+@mindriver.app.route('/accounts/register/')
+def route_register_get():
+    """Route for register page."""
+    # PASS
+    context = {}
+    return flask.render_template("register.html", **context)
+
+
