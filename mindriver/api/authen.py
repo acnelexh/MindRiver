@@ -1,8 +1,9 @@
 # authentication for the mindriver api
 import uuid
 import hashlib
+import sqlite3
 import flask
-from mindriver.api.sqlutils import sql_get_user
+from mindriver.api.sqlutils import sql_get_user, sql_add_user
 from mindriver.api.utils import save_file
 
 def password_authenitication(password_input, password_db):
@@ -56,7 +57,9 @@ def user_login(cur):
         user = sql_get_user(username, cur)
     except IndexError:
         # user authentication failed
+        print("user authentication failed")
         flask.abort(403)
+    print("user authentication passed")
     if not password_authenitication(password, user['password']):
         # password authentication failed
         flask.abort(403)
@@ -70,7 +73,7 @@ def user_create(cur):
     email = flask.request.form['email']
     password = flask.request.form['password']
     password_confirm = flask.request.form['confirm_password']
-    filename = flask.request.files["profile_picture"].filename
+    filename = flask.request.files["file"].filename
     if len(first_name) == 0 or len(last_name) == 0 or len(username) == 0 or\
         len(email) == 0 or len(password) == 0 or len(password_confirm) == 0 or\
         len(filename) == 0:
@@ -84,10 +87,12 @@ def user_create(cur):
         flask.abort(409)
     except IndexError:
         pass
+    print("create user")
     password = password_hash(password)
     filename = save_file()
-    cur.execute(
-        "INSERT INTO users(username, firstname, lastname, email, filename, password)"
-        "VALUES (?, ?, ?, ?, ?, ?);",
-        (username, first_name, last_name, email, filename, password))
+    try:
+        sql_add_user(username, first_name, last_name, email, filename, password, cur)
+    except sqlite3.IntegrityError:
+        # user already exists
+        flask.abort(409)
     flask.session['username'] = username

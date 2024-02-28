@@ -5,7 +5,6 @@
 # See https://vaneyckt.io/posts/safer_bash_scripts_with_set_euxo_pipefail/
 set -Eeuo pipefail
 
-
 DB_NAME="var/mindriver.db"
 DB_UPLOADS="var/uploads"
 
@@ -28,6 +27,7 @@ create() {
 	else
 		# Create a new SQLite database
 		sqlite3 $DB_NAME "$CREATE_TABLE_SQL"	
+		mkdir -p $DB_UPLOADS
 		if [ $? -eq 0 ]; then
 			echo "Database and table created successfully."
 		else
@@ -44,7 +44,6 @@ reset() {
 	destroy
 	create
 }
-
 
 if [ $# -ne 1 ]; then
   	usage

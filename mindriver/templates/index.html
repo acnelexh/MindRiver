@@ -7,10 +7,17 @@
 
 {% block body %}
 <!-- Plain old HTML and jinja2 nav bar goes here -->
+
+{% if user %}
+    <p>Welcome, {{user}}!</p>
+{% endif %}
+
 <ul>
     <li>
         <a href="{{url_for('route_index_get')}}">Mindriver</a>
-        <a href="{{url_for('route_login_get')}}">login</a>
+    </li>
+    <li>
+        <a href="{{url_for('route_login_get')}}">Login</a>
     </li>
 </ul>
 
