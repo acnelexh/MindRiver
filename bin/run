@@ -8,6 +8,7 @@ if [ ! -f 'var/mindriver.db' ];
 	then ./bin/mindriverdb create
 fi
 
+source env/bin/activate
 
 export FLASK_ENV=development
 export FLASK_APP=mindriver

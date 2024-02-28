@@ -15,12 +15,24 @@ usage() {
 }
 
 create() {
+	CREATE_TABLE_SQL="CREATE TABLE IF NOT EXISTS users (
+		username TEXT PRIMARY KEY,
+		firstname TEXT NOT NULL,
+		lastname TEXT NOT NULL,
+		email TEXT NOT NULL UNIQUE,
+		filename TEXT,
+		password TEXT NOT NULL
+	);"
 	if [ -f "$DB_NAME" ]; then
     	echo "Database $DB_NAME already exists."
 	else
 		# Create a new SQLite database
-		sqlite3 $DB_NAME "VACUUM;"
-		echo "Database $DB_NAME created successfully."
+		sqlite3 $DB_NAME "$CREATE_TABLE_SQL"	
+		if [ $? -eq 0 ]; then
+			echo "Database and table created successfully."
+		else
+			echo "Failed to create database or table."
+		fi
 	fi
 }
 

@@ -1,4 +1,4 @@
-# Project Name
+# MindRiver Webapp
 
 ## Description
 

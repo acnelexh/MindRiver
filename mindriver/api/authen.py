@@ -2,8 +2,8 @@
 import uuid
 import hashlib
 import flask
-from mindriver.api.sqlutils import sql_select_one_user, sql_get_user
-from utils import save_file
+from mindriver.api.sqlutils import sql_get_user
+from mindriver.api.utils import save_file
 
 def password_authenitication(password_input, password_db):
     """Help authenticate password."""
@@ -36,7 +36,7 @@ def user_authentication():
     if len(username) == 0 or len(password) == 0:
         return 400
     try:
-        user = sql_select_one_user(username)
+        user = sql_get_user(username)
     except IndexError:
         # user authentication failed
         return 403
@@ -53,7 +53,7 @@ def user_login(cur):
     if len(username) == 0 or len(password) == 0:
         flask.abort(400)
     try:
-        user = sql_get_user(cur, username)
+        user = sql_get_user(username, cur)
     except IndexError:
         # user authentication failed
         flask.abort(403)
@@ -69,17 +69,18 @@ def user_create(cur):
     username = flask.request.form['username']
     email = flask.request.form['email']
     password = flask.request.form['password']
-    password_confirm = flask.request.form['password_confirm']
-    filename = flask.request.files["file"].filename
+    password_confirm = flask.request.form['confirm_password']
+    filename = flask.request.files["profile_picture"].filename
     if len(first_name) == 0 or len(last_name) == 0 or len(username) == 0 or\
-        len(email) == 0 or len(password) == 0 or len(filename) == 0:
+        len(email) == 0 or len(password) == 0 or len(password_confirm) == 0 or\
+        len(filename) == 0:
         # missing input
         flask.abort(400)
     if password != password_confirm:
         # password confirmation failed
         flask.abort(400)
     try:
-        sql_get_user(cur, username)
+        sql_get_user(username, cur)
         flask.abort(409)
     except IndexError:
         pass
