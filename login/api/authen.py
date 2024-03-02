@@ -3,7 +3,7 @@
 import uuid
 import hashlib
 import flask
-from mindriver.api.sqlutils import sqlselect_one_user
+from login.api.sqlutils import sqlselect_one_user
 
 
 def password_authenitication(password_input, password_db):

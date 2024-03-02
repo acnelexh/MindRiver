@@ -1,15 +1,15 @@
 import flask
 import arrow
-import mindriver
+import login
 
-@mindriver.app.route('/')
+@login.app.route('/')
 def route_index_get():
     """Route for index page."""
     # PASS
     context = {}
     return flask.render_template("index.html", **context)
 
-@mindriver.app.route('/accounts/login/')
+@login.app.route('/accounts/login/')
 def route_login_get():
     """Route for login page."""
     # PASS

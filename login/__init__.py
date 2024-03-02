@@ -19,6 +19,6 @@ app.config.from_envvar('MINDRIVER_SETTINGS', silent=True)
 # circular import, which is naughty, but Flask was designed that way.
 # (Reference http://flask.pocoo.org/docs/patterns/packages/)  We're
 # going to tell pylint and pycodestyle to ignore this coding style violation.
-import mindriver.views  # noqa: E402  pylint: disable=wrong-import-position
-import mindriver.model  # noqa: E402  pylint: disable=wrong-import-position
-import mindriver.api  # noqa: E402  pylint: disable=wrong-import-position
+import login.views  # noqa: E402  pylint: disable=wrong-import-position
+import login.model  # noqa: E402  pylint: disable=wrong-import-position
+import login.api  # noqa: E402  pylint: disable=wrong-import-position

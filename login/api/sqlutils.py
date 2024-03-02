@@ -1,8 +1,8 @@
-import mindriver
+import login
 
 def sqlselect_one_user(user_url_slug):
     """Get one user."""
-    connection = mindriver.model.get_db()
+    connection = login.model.get_db()
     cur = connection.cursor()
     user = cur.execute(
         "SELECT * FROM users WHERE username=?",

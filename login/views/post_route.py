@@ -1,12 +1,12 @@
 import flask
-from mindriver.api.authen import user_login
-import mindriver
+from login.api.authen import user_login
+import login
 
-@mindriver.app.route('/accounts/', methods=['POST'])
+@login.app.route('/accounts/', methods=['POST'])
 def route_accounts_post():
     """Route for POST method account."""
     operation = flask.request.form['operation']
-    connection = mindriver.model.get_db()
+    connection = login.model.get_db()
     cur = connection.cursor()
     if operation == 'login':
         if 'username' in flask.session:
