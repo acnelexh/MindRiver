@@ -1,14 +1,14 @@
 import flask
 import mindriver
-from mindriver.api.authen import user_login, user_create
-from mindriver.model import get_db
+from mindriver.api.authen import user_login, user_create, user_recover, user_password
+from mindriver.model import get_user_db
 
 
 @mindriver.app.route('/accounts/', methods=['POST'])
 def route_accounts_post():
     """Route for POST method account."""
     operation = flask.request.form['operation']
-    connection = get_db()
+    connection = get_user_db()
     cur = connection.cursor()
     if operation == 'login':
         if 'username' in flask.session:
@@ -21,6 +21,11 @@ def route_accounts_post():
             # already login, go to edit account
             return flask.redirect(flask.url_for('route_edit_get'))
         user_create(cur)
+    elif operation == 'recover':
+        if 'username' in flask.session:
+            # already login, go to edit account
+            return flask.redirect(flask.url_for('route_edit_get'))
+        user_recover(cur)
     # elif operation == 'delete':
     #     if 'username' not in flask.session:
     #         # user not login
@@ -32,11 +37,11 @@ def route_accounts_post():
     #         # user not login
     #         flask.abort(403)
     #     user_edit(cur)
-    # elif operation == 'update_password':
-    #     if 'username' not in flask.session:
-    #         # user not login
-    #         flask.abort(403)
-    #     user_password(cur)
+    elif operation == 'reset_password':
+        if 'username' not in flask.session:
+            # user not login
+            flask.abort(403)
+        user_password(cur)
     else:
         print(f"Unrecognized operation: {operation}")
         flask.abort(404)

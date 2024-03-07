@@ -22,3 +22,5 @@ app.config.from_envvar('MINDRIVER_SETTINGS', silent=True)
 import mindriver.views  # noqa: E402  pylint: disable=wrong-import-position
 import mindriver.model  # noqa: E402  pylint: disable=wrong-import-position
 import mindriver.api  # noqa: E402  pylint: disable=wrong-import-position
+
+

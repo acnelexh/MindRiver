@@ -15,6 +15,9 @@ ROOT = pathlib.Path(__file__).resolve().parent.parent
 UPLOAD_FOLDER = ROOT/'var'/'uploads'
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif'])
 MAX_CONTENT_LENGTH = 16 * 1024 * 1024
+MAIL_SERVER = 'smtp.gmail.com'
+SERVER_MAIL_ADDR = "alexchenlol0511@gmail.com"
 
 # Database file is var/mindriver.sqlite3
 DATABASE_FILENAME = ROOT/'var'/'mindriver.db'
+RECOVER_DATABASE_FILENAME = ROOT/'var'/'recover.db'

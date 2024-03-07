@@ -1,7 +1,7 @@
 import flask
 import arrow
 import mindriver
-from mindriver.model import get_db
+from mindriver.model import get_user_db
 
 @mindriver.app.route('/')
 def route_index_get():
@@ -12,7 +12,7 @@ def route_index_get():
     except KeyError:
         return flask.redirect(flask.url_for('route_login_get'))
     context = {}
-    connection = get_db()
+    connection = get_user_db()
     cur = connection.cursor()
     return flask.render_template("index.html", **context)
 
@@ -37,4 +37,10 @@ def route_register_get():
     context = {}
     return flask.render_template("register.html", **context)
 
+@mindriver.app.route('/accounts/recover/')
+def route_recover_get():
+    """Route for recover page."""
+    # PASS
+    context = {}
+    return flask.render_template("recover.html", **context)
 

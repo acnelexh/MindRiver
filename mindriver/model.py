@@ -13,7 +13,7 @@ def dict_factory(cursor, row):
     return {col[0]: row[idx] for idx, col in enumerate(cursor.description)}
 
 
-def get_db():
+def get_user_db():
     """Open a new database connection.
 
     Flask docs:
@@ -30,6 +30,24 @@ def get_db():
 
     return flask.g.sqlite_db
 
+def get_recover_db():
+    """Init db only for keeping temporary link for password reset.
+    Init db to be empty."""
+    if 'sqlite_recover_db' not in flask.g:
+        db_filename = mindriver.app.config['RECOVER_DATABASE_FILENAME']
+        flask.g.sqlite_recover_db = sqlite3.connect(str(db_filename))
+        flask.g.sqlite_recover_db.row_factory = dict_factory
+        flask.g.sqlite_recover_db.execute("PRAGMA foreign_keys = ON")
+        cur = flask.g.sqlite_recover_db.cursor()
+        cur.execute("""CREATE TABLE IF NOT EXISTS recover (
+                    tmpid TEXT PRIMARY KEY,
+                    username TEXT NOT NULL,
+                    expiredate TEXT NOT NULL
+                    );""")
+        cur.execute()
+        flask.g.sqlite_recover_db.commit()
+
+    return flask.g.sqlite_recover_db
 
 @mindriver.app.teardown_appcontext
 def close_db(error):
@@ -43,3 +61,8 @@ def close_db(error):
     if sqlite_db is not None:
         sqlite_db.commit()
         sqlite_db.close()
+    sqlite_recover_db = flask.g.pop('sqlite_recover_db', None)
+    if sqlite_recover_db is not None:
+        sqlite_recover_db.commit()
+        sqlite_recover_db.close()
+    
