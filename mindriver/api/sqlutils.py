@@ -38,7 +38,7 @@ def sql_add_tmpid(tmpid, username, expiry_date, cursor=None):
     Return: None
     """
     if cursor is None:
-        connection = mindriver.model.get_recovery_db()
+        connection = mindriver.model.get_recover_db()
         cursor = connection.cursor()
     cursor.execute(
         "INSERT INTO recover(tmpid, username, expiredate) VALUES(?, ?, ?)",
@@ -52,7 +52,7 @@ def sql_get_username_expiredate(tmpid, cursor=None):
     Return: matching expire date and username in recover table
     """
     if cursor is None:
-        connection = mindriver.model.get_recovery_db()
+        connection = mindriver.model.get_recover_db()
         cursor = connection.cursor()
     result = cursor.execute(
         "SELECT expiredate, username FROM recover WHERE tmpid=?", (tmpid,)).fetchall()

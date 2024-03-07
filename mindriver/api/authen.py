@@ -2,6 +2,7 @@
 import uuid
 import hashlib
 from datetime import datetime, timedelta
+import mindriver
 import sqlite3
 import flask
 from mindriver.api.sqlutils import sql_get_user, sql_add_user, sql_add_tmpid, sql_get_username_expiredate
@@ -109,42 +110,27 @@ def user_recover(cur):
     except IndexError:
         # user authentication failed
         flask.abort(403)
+    print("account found")
     if email != user['email']:
         # email authentication failed
         flask.abort(403)
+    print("email found")
     # Generate a temporary link
-    temporary_link = generate_temporary_link(flask.current_app.config['APPLICATION_ROOT'])
+    temporary_link = generate_temporary_link(mindriver.app.config['APPLICATION_ROOT'], username)
+    print(f"temporary link generated: {temporary_link}")
     # Send recovery email
-    send_recovery_email(user['email'], temporary_link)
+    send_recovery_email(email, temporary_link)
 
-def generate_temporary_link(base_url):
+def generate_temporary_link(base_url, username):
     """Help generate temporary link."""
     # Generate a unique identifier
     unique_id = uuid.uuid4().hex
     # Append the unique identifier to the base URL
-    temporary_link = f"{base_url}/reset_password/{unique_id}"
+    temporary_link = f"{base_url}/accounts/reset_password/{unique_id}"
     # Save the unique identifier to the database
     expire_date = datetime.utcnow() + timedelta(hours=1)
-    sql_add_tmpid(unique_id, expire_date.strftime('%Y-%m-%d %H:%M:%S.%f'))
+    sql_add_tmpid(unique_id, username, expire_date.strftime('%Y-%m-%d %H:%M:%S.%f'))
     return temporary_link
-
-@flask.current_app.route('/reset_password/<string:unique_id>')
-def route_reset_password_get(unique_id):
-    """Route for reset password page."""
-    try:
-        result = sql_get_username_expiredate(unique_id)
-    except IndexError:
-        # unique id not found
-        flask.abort(404)
-    username = result['username']
-    expire_date = result['expiredate']
-    if datetime.utcnow() > datetime.strptime(expire_date, '%Y-%m-%d %H:%M:%S.%f'):
-        # unique id expired
-        flask.abort(410)
-    else:
-        # unique id is valid
-        flask.session['username'] = username
-        return flask.render_template("reset_password.html")
 
 def send_recovery_email(email, temporary_link):
     """Help send recovery email."""

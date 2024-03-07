@@ -44,7 +44,6 @@ def get_recover_db():
                     username TEXT NOT NULL,
                     expiredate TEXT NOT NULL
                     );""")
-        cur.execute()
         flask.g.sqlite_recover_db.commit()
 
     return flask.g.sqlite_recover_db
