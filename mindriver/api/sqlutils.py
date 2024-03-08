@@ -16,7 +16,7 @@ def sql_get_user(user_url_slug, cursor=None):
         (user_url_slug,)).fetchall()
     return user[0]
 
-def sql_add_user(username, firstname, lastname, email, filename, password, cursor=None):
+def sql_add_user(username, firstname, lastname, email, filename, password, dob, gender, cursor=None):
     """
     Execute SQL command.
 
@@ -27,8 +27,10 @@ def sql_add_user(username, firstname, lastname, email, filename, password, curso
         connection = mindriver.model.get_user_db()
         cursor = connection.cursor()
     cursor.execute(
-        "INSERT INTO users(username, firstname, lastname, email, filename, password) VALUES(?, ?, ?, ?, ?, ?)",
-        (username, firstname, lastname, email, filename, password))
+        """INSERT INTO users (
+            username, firstname, lastname, email, filename, password, dob, gender) 
+            VALUES(?, ?, ?, ?, ?, ?, ?, ?)""",
+        (username, firstname, lastname, email, filename, password, dob, gender))
 
 def sql_add_tmpid(tmpid, username, expiry_date, cursor=None):
     """

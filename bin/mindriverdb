@@ -20,7 +20,9 @@ create() {
 		lastname TEXT NOT NULL,
 		email TEXT NOT NULL UNIQUE,
 		filename TEXT,
-		password TEXT NOT NULL
+		password TEXT NOT NULL,
+		dob TEXT NOT NULL,
+		gender TEXT NOT NULL
 	);"
 	if [ -f "$DB_NAME" ]; then
     	echo "Database $DB_NAME already exists."

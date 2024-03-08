@@ -76,6 +76,8 @@ def user_create(cur):
     password = flask.request.form['password']
     password_confirm = flask.request.form['confirm_password']
     filename = flask.request.files["file"].filename
+    dob = flask.request.form['dob']
+    gender = flask.request.form['gender']
     if len(first_name) == 0 or len(last_name) == 0 or len(username) == 0 or\
         len(email) == 0 or len(password) == 0 or len(password_confirm) == 0 or\
         len(filename) == 0:
@@ -92,7 +94,7 @@ def user_create(cur):
     password = password_hash(password)
     filename = save_file()
     try:
-        sql_add_user(username, first_name, last_name, email, filename, password, cur)
+        sql_add_user(username, first_name, last_name, email, filename, password, dob, gender, cur)
     except sqlite3.IntegrityError:
         # user already exists
         flask.abort(409)
@@ -158,3 +160,16 @@ def user_password(cur):
     cur.execute(
         "UPDATE users SET password=? WHERE username=?",
         (password, username))
+
+def user_edit(cur):
+    """Help edit user."""
+    username = flask.session['username']
+    first_name = flask.request.form['firstname']
+    last_name = flask.request.form['lastname']
+    filename = flask.request.files["file"].filename
+    dob = flask.request['dob']
+    gender = flask.request['gender']
+    if len(first_name) == 0 or len(last_name) == 0 or len(filename) == 0:
+        # missing input
+        flask.abort(400)
+    

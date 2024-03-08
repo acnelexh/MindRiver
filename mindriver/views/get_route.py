@@ -3,7 +3,7 @@ import arrow
 import mindriver
 from mindriver.model import get_user_db
 from datetime import datetime
-from mindriver.api.sqlutils import sql_get_username_expiredate
+from mindriver.api.sqlutils import sql_get_username_expiredate, sql_get_user
 
 @mindriver.app.route('/')
 def route_index_get():
@@ -23,6 +23,8 @@ def route_index_get():
 def route_login_get():
     """Route for login page."""
     # PASS
+    if 'username' in flask.session:
+        return flask.redirect(flask.url_for('route_edit_get'))
     context = {}
     return flask.render_template("login.html", **context)
 
@@ -37,6 +39,8 @@ def route_logout_get():
 def route_register_get():
     """Route for register page."""
     # PASS
+    if 'username' in flask.session:
+        return flask.redirect(flask.url_for('route_edit_get'))
     context = {}
     return flask.render_template("register.html", **context)
 
@@ -44,6 +48,8 @@ def route_register_get():
 def route_recover_get():
     """Route for recover page."""
     # PASS
+    if 'username' in flask.session:
+        return flask.redirect(flask.url_for('route_edit_get'))
     context = {}
     return flask.render_template("recover.html", **context)
 
@@ -64,3 +70,34 @@ def route_reset_password_get(unique_id):
         # unique id is valid
         flask.session['username'] = username
         return flask.render_template("reset.html")
+
+@mindriver.app.route('/accounts/edit/')
+def route_edit_get():
+    if 'username' not in flask.session:
+        # user not login
+        flask.abort(403)
+    context = {}
+    context['user'] = flask.session['username']
+    # user.firstname, user.lastname, user.gender, user.dob, user.email
+    connection = get_user_db()
+    cur = connection.cursor()
+    user = sql_get_user(flask.session['username'], cur)
+    context['first_name'] = user['firstname']
+    context['last_name'] = user['lastname']
+    # Include uploaded picture in context
+    context['userProfile'] = user['filename']
+    context['gender'] = user['gender']
+    context['dob'] = arrow.get(user['dob']).format('YYYY-MM-DD')
+    context['email'] = user['email']
+    return flask.render_template("edit_profile.html", **context)
+
+@mindriver.app.route('/uploads/<filename>')
+def route_uploads_get(filename):
+    """Route for display uploads."""
+    if 'username' not in flask.session:
+        return flask.abort(403)
+    try:
+        return flask.send_from_directory(
+            mindriver.config.UPLOAD_FOLDER, filename), 200
+    except FileNotFoundError:
+        return flask.abort(404)

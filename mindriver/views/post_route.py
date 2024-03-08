@@ -1,6 +1,6 @@
 import flask
 import mindriver
-from mindriver.api.authen import user_login, user_create, user_recover, user_password
+from mindriver.api.authen import user_login, user_create, user_recover, user_password, user_edit
 from mindriver.model import get_user_db
 
 
@@ -32,11 +32,11 @@ def route_accounts_post():
     #         flask.abort(403)
     #     user_delete(cur)
     #     flask.session.clear()
-    # elif operation == 'edit_account':
-    #     if 'username' not in flask.session:
-    #         # user not login
-    #         flask.abort(403)
-    #     user_edit(cur)
+    elif operation == 'edit':
+        if 'username' not in flask.session:
+            # user not login
+            flask.abort(403)
+        user_edit(cur)
     elif operation == 'reset_password':
         if 'username' not in flask.session:
             # user not login
