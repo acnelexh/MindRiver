@@ -14,7 +14,7 @@ usage() {
 }
 
 create() {
-	CREATE_TABLE_SQL="CREATE TABLE IF NOT EXISTS users (
+	CREATE_USER_TABLE_SQL="CREATE TABLE IF NOT EXISTS users (
 		username TEXT PRIMARY KEY,
 		firstname TEXT NOT NULL,
 		lastname TEXT NOT NULL,
@@ -22,20 +22,26 @@ create() {
 		filename TEXT,
 		password TEXT NOT NULL,
 		dob TEXT NOT NULL,
-		gender TEXT NOT NULL
+		gender TEXT NOT NULL,
+	);"
+	CREATE_WISH_TABLE_SQL="CREATE TABLE IF NOT EXISTS wishes (
+		wish_id INTEGER PRIMARY KEY AUTOINCREMENT,
+		username TEXT NOT NULL,
+		wish TEXT NOT NULL,
+		FOREIGN KEY (username) REFERENCES users(username)
 	);"
 	if [ -f "$DB_NAME" ]; then
     	echo "Database $DB_NAME already exists."
 	else
 		# Create a new SQLite database
-		sqlite3 $DB_NAME "$CREATE_TABLE_SQL"	
+		sqlite3 $DB_NAME "$CREATE_USER_TABLE_SQL"	
+		sqlite3 $DB_NAME "$CREATE_WISH_TABLE_SQL"
 		mkdir -p $DB_UPLOADS
 		if [ $? -eq 0 ]; then
 			echo "Database and table created successfully."
 		else
 			echo "Failed to create database or table."
 		fi
-	fi
 }
 
 destroy() {
