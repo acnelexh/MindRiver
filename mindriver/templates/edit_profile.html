@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<title>Mindriver</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+{% endblock %}
+
+{% block body %}
+<!-- Plain old HTML and jinja2 nav bar goes here -->
+
+{% if user %}
+    <p>Welcome, {{user}}!</p>
+{% endif %}
+
+<ul>
+    <li>
+        <a href="{{url_for('route_index_get')}}">Mindriver</a>
+    </li>
+    <li>
+        <a href="{{url_for('route_login_get')}}">Login</a>
+    </li>
+    <li>
+        <a href="{{url_for('route_logout_get')}}">Logout</a>
+    </li>
+    <img src="{{url_for('route_uploads_get', filename=userProfile)}}" alt="userProfile" style="width:50px;height:50px;">
+</ul>
+
+<ul>
+    <li>
+    <form action="{{url_for('route_accounts_post')}}" method="POST">
+        <label for="firstname">First Name:</label>
+        <input type="text" id="firstname" name="firstname" value="{{first_name}}" required>
+        <br>
+        <label for="lastname">Last Name:</label>
+        <input type="text" id="lastname" name="lastname" value="{{last_name}}" required>
+        <br>
+        <label for="gender">Gender:</label>
+        <select id="gender" name="gender" required>
+            <option value="male" {% if user.gender == 'male' %}selected{% endif %}>Male</option>
+            <option value="female" {% if user.gender == 'female' %}selected{% endif %}>Female</option>
+            <option value="other" {% if user.gender == 'other' %}selected{% endif %}>Other</option>
+        </select>
+        <br>
+        <label for="dob">Date of Birth:</label>
+        <input type="date" id="dob" name="dob" value="{{dob}}" required>
+        <br>
+        <label for="profile_pic">Profile Picture:</label>
+        <input type="file" id="file" name="file">
+        <br>
+        <input type="submit" value="Save">
+        <input type="hidden" name="operation" value="edit">
+    </form>
+        
+    </li>
+</ul>
+
+
+{% endblock %}
